@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #main {
+            width: 100%;
+            height: 100vh;
+            background-color: lightgrey;
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            padding: 20px 20px;
+        }
+
+        .todo {
+            padding: 20px 20px;
+            background-color: white;
+            width: 600px;
+            position: relative;
+        }
+
+        input {
+            width: 450px;
+            padding: 15px 10px;
+            font-size: 25px;
+            border-radius: 6px;
+            border: 1px solid gray;
+            outline: none;
+
+
+        }
+
+        button {
+            font-size: 25px;
+            padding: 15px;
+            border-radius: 6px;
+            background-color: salmon;
+            color: white;
+            cursor: pointer;
+            border: 1px solid gray;
+
+        }
+
+        ul {
+            width: 450px;
+            padding: 20px;
+        }
+
+        ul li {
+            font-size: 28px;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        ul li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            width:28px;
+            height:28px;
+            border-radius: 50%;
+            border: 1px solid black;
+            background-color: transparent;
+
+        }
+
+        ul li.checked {
+            text-decoration: line-through;
+        }
+
+        ul li.checked::before {
+            background-color: black;
+        }
+
+
+
+        ul span {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content:center;
+        }
+        ul span:hover {
+            background-color: lightgray;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="main">
+        <div class="todo">
+            <input id="inputText" type="text" placeholder="please enter task">
+            <button id="AddBtn" class="addBtn">ADD</button>
+
+            <ul class="list-container">
+
+            </ul>
+        </div>
+
+
+    </div>
+
+
+    <script>
+        let inputText = document.getElementById('inputText');
+        let AddBtn = document.getElementById("AddBtn");
+
+        let list = document.querySelector(".list-container");
+
+        function addTask(event) {
+            event.preventDefault();
+
+            if (inputText.value === "") {
+                alert("please add something")
+            } else {
+                let li = document.createElement("li");
+                li.innerHTML = inputText.value;
+                list.appendChild(li);
+                let span = document.createElement("span");
+                span.innerHTML = "\u00d7";
+                li.appendChild(span)
+            }
+            inputText.value = ""
+
+        }
+
+
+        list.addEventListener("click", function(e) {
+
+            if (e.target.tagName === "LI"){
+                e.target.classList.toggle("checked")
+                saveData();
+            }else if (e.target.tagName === "SPAN"){
+                e.target.parentElement.remove();
+                saveData();
+            }
+        })
+
+        document.querySelector(".addBtn").addEventListener("click", function (e) {
+
+            addTask(e)
+            saveData();
+        })
+
+        function saveData() {
+            localStorage.setItem("data", list.innerHTML);
+        }
+
+        function showTask() {
+           list.innerHTML =  localStorage.getItem("data")
+        }
+
+    </script>
+
+</body>
+
+</html>

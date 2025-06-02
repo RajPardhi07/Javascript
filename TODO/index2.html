@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        #main {
+            width: 100%;
+            height: 100vh;
+            background-color: lightgray;
+            display: flex;
+            align-items: start;
+            justify-content: center;
+        }
+
+        .todo {
+            padding: 20px 20px;
+            background-color: white;
+            width: 600px;
+            position: relative;
+
+        }
+
+        input {
+            width: 450px;
+            padding: 15px 10px;
+            font-size: 25px;
+            border-radius: 6px;
+            border: 1px solid gray;
+            outline: none;
+
+
+        }
+
+        button {
+            font-size: 25px;
+            padding: 15px;
+            border-radius: 6px;
+            background-color: darkslategrey;
+            color: white;
+            cursor: pointer;
+            border: none;
+
+        }
+
+        ul {
+            width: 450px;
+            padding: 20px 20px;
+
+        }
+
+        ul li span {
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        ul li span:hover {
+            background-color: lightgray;
+
+        }
+
+        ul li {
+            list-style: none;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            justify-content: space-between;
+
+        }
+        ul li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            width: 30px;
+            height: 30px;
+            border: 1px solid black;
+            background-color: transparent;
+            border-radius: 50%;
+        }
+
+        ul li.checked {
+            text-decoration: line-through;
+        }
+
+        ul li.checked::before {
+            background-color: black;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div class="todo">
+            <input id="innerText" type="text" placeholder="please enter text">
+            <button id="addBtn">ADD</button>
+
+            <ul class="list">
+
+            </ul>
+        </div>
+    </div>
+
+
+    <script>
+        let innerText = document.getElementById("innerText");
+        let addBtn = document.getElementById("addBtn");
+        let list = document.querySelector(".list");
+
+
+        function addTask(event) {
+            event.preventDefault();
+
+            if (innerText.value === "") {
+                alert("please enter the Text")
+            } else {
+                let li = document.createElement("li");
+                li.innerHTML = innerText.value;
+                list.appendChild(li);
+                let span = document.createElement("span");
+                span.innerHTML = "\u00d7";
+                li.appendChild(span);
+            }
+            innerText.value = ""
+        }
+
+        list.addEventListener("click", function (e) {
+            if (e.target.tagName === "LI") {
+                e.target.classList.toggle("checked")
+                saveTask();
+            } else if (e.target.tagName === "SPAN") {
+                e.target.parentElement.remove();
+                saveTask();
+
+            }
+        })
+
+
+        addBtn.addEventListener("click", function (e) {
+            addTask(e);
+            saveTask();
+        })
+
+
+        function saveTask() {
+            localStorage.setItem("data", list.innerHTML);
+        }
+
+
+        function showTask() {
+            list.innerHTML = localStorage.getItem("data")
+        }
+
+        showTask();
+
+    </script>
+</body>
+
+</html>
