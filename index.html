@@ -4,28 +4,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Battery Percentage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        section {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        section.dark {
+            background: #161623;
+        }
+
+        section::before {
+            content: "";
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            background: linear-gradient(#6cff47, #3d1046);
+            border-radius: 50%;
+            transform: translate(-150px, -100px);
+        }
+
+        section.dark::before {
+            background: linear-gradient(#ffc107, #e91e63);
+        }
+
+        section::after {
+            content: "";
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(#f10050, rgb(8, 216, 253));
+            border-radius: 50%;
+            transform: translate(150px, 100px);
+        }
+
+        section.dark::after {
+            background: linear-gradient(#2196f3, #31ff38);
+        }
+
+        .box {
+            position: relative;
+            width: 240px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .box h3 {
+            color: #000000;
+            font-weight: 500;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        .section.dark .box h3 {
+            color: #fff;
+        }
+
+        .batteryShape {
+            position: relative;
+            width: 140px;
+            height: 65px;
+            margin: 20px 0;
+            border: 3px solid #333;
+            border-radius: 10px;
+        }
+
+        section.dark .batteryShape {
+            border: 3px solid #fff;
+        }
+
+        .batteryShape::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -12px;
+            transform: translateY(-50%);
+            width: 7px;
+            height: 16px;
+            background: #333;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        section.dark .batteryShape::before {
+            background: #fff;
+        }
+
+        .batteryShape::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: rgba(255, 255, 255, 0.1);
+
+        }
+
+        .level {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            overflow: hidden;
+        }
+
+        .percentage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg, #ffeb3b, #27ff00);
+            border-radius: 4px;
+        }
+
+        section.dark .percentage {
+            background: linear-gradient(90deg, #ffeb3b, #27ff00);
+        }
+
+        .percent {
+            color: #000000;
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        section.dark .percent {
+            color: #fff;
+        }
+
+        .toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #070716;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        .dark .toggle {
+            background: #fff;
+        }
+
+        .toggle::before {
+            content: "\f186";
+            color: #fff;
+        }
+
+        .dark .toggle::before {
+            content: "\f185";
+            color: #161623;
+        }
+
+        #charge {
+            position: absolute;
+            top: 15%;
+            display: flex;
+            padding: 20px;
+            background: linear-gradient(90deg, #ffeb3b, #27ff00);
+            z-index: 1;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+        }
+        #charge h2 {
+            font-weight: 500;
+        }
+        .charge {
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        #time{
+            position: absolute;
+            bottom: 10%;
+            padding: 20px;
+            background: linear-gradient(90deg, #e7c55f, #e05d89);
+            z-index: 1;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        
+        }
+        #time h3 {
+            font-weight: 500;
+        }
+        #Raj {
+            position: absolute;
+            top: 5%;
+            font-weight: 500;
+            width: 240px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.514);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            /* backdrop-filter: blur(25px); */
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="main">
-        <div class="container">
-            <div class="todo-app">
-                <h2>ToDo APP</h2>
-                <div class="row">
-                    <input type="text" id="input-box" placeholder="Please enter your task">
-                    <button onclick="addTask()" class="add">ADD</button>
-                </div>
-                <ul id="list-container">
+    <section class="sec">
+        <h1 id="Raj">Created by: RAJ</h1>
+        <div class="toggle"></div>
 
-                </ul>
+        <div id="charge">
+
+            <h2 >Device Charging : <span class="charge"></span></h2>
+
+        </div>
+        <div class="box">
+            <div class="content">
+                <h3>Battery</h3>
+                <div class="batteryShape">
+                    <div class="level">
+
+
+                        <div class="percentage"></div>
+                    </div>
+                </div>
+
+
+                <div class="percent">50%</div>
+
             </div>
         </div>
-    </div>
 
 
-    <script src="script.js"></script>
+          <div id="time">
+                    <h3>Time Required to Full Charge :</h3>
+                    <h2 class="chargingTime"></h2>
+                </div>
+    </section>
+
+
+    <script>
+
+        let percentage = document.querySelector(".percentage");
+        let percent = document.querySelector(".percent");
+        let charge = document.querySelector(".charge");
+        let chargingTime = document.querySelector(".chargingTime");
+
+
+        navigator.getBattery().then(function (battery) {
+            percentage.style.width = battery.level * 100 + "%";
+            percent.innerHTML = Math.floor(battery.level * 100) + "%";
+
+            if (battery.charging === true) {
+                charge.innerHTML = " On"
+            } else {
+                charge.innerHTML = " Off"
+
+            }
+
+            chargingTime.innerHTML = Math.floor(battery.chargingTime / 60) + " Minutes"
+
+        });
+
+
+
+
+
+
+    </script>
 </body>
 
 </html>
